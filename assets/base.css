@@ -3863,3 +3863,7 @@ header.header--has-menu {
     padding-left: 0;
   }
 }
+
+.inline-richtext {
+    color: lightyellow;
+}
