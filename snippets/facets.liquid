@@ -109,6 +109,69 @@
 
             <script src="{{ 'show-more.js' | asset_url }}" defer="defer"></script>
             {% comment %} Filters for both horizontal and vertical filter {% endcomment %}
+            {%- comment -%} Custom Collection-Based Dynamic Filter (Start) {%- endcomment -%}
+            {%- if results.handle -%}
+              {%- assign custom_menu = linklists[results.handle] -%}
+              {%- if custom_menu.links.size > 0 -%}
+                <details
+                  id="Details-Custom-{{ results.handle }}-{{ section.id }}"
+                  class="{% if filter_type == 'horizontal' %}disclosure-has-popup facets__disclosure{% else %} facets__disclosure-vertical{% endif %} js-filter"
+                  data-index="0"
+                  {% if filter_type == 'vertical' %}
+                    open
+                  {% endif %}
+                >
+                  <summary class="facets__summary caption-large focus-offset">
+                    <div>
+                      <span class="facets__summary-label">
+                        {{ custom_menu.title | escape }}
+                      </span>
+                      {{- 'icon-caret.svg' | inline_asset_content -}}
+                    </div>
+                  </summary>
+                  <div
+                    id="Facet-Custom-{{ section.id }}"
+                    class="parent-display {% if filter_type == 'horizontal' %}facets__display{% else %}facets__display-vertical{% endif %}"
+                  >
+                    <fieldset class="facets-wrap parent-wrap {% if filter_type == 'vertical' %} facets-wrap-vertical{% endif %}">
+                      <legend class="visually-hidden">{{ custom_menu.title | escape }}</legend>
+                      <ul class="facets-layout facets-layout-list facets__list list-unstyled" role="list">
+                        {%- for link in custom_menu.links -%}
+                          <li class="list-menu__item facets__item">
+                            <label class="facets__label facet-checkbox">
+                              <input
+                                type="checkbox"
+                                name="custom_filter_{{ link.handle }}"
+                                value="{{ link.url }}"
+                                {% if request.path == link.url %}
+                                  checked
+                                {% endif %}
+                                onclick="window.location.href='{{ link.url }}'"
+                              >
+
+                              {%- if presentation == 'image' -%}
+                                {% comment %} Image support omitted for simple link list defaults {% endcomment %}
+                              {%- else -%}
+                                {{- 'square.svg' | inline_asset_content -}}
+                                <div class="svg-wrapper">
+                                  {{- 'icon-checkmark.svg' | inline_asset_content -}}
+                                </div>
+                              {%- endif -%}
+
+                              <span class="facet-checkbox__text">
+                                <span class="facet-checkbox__text-label">{{ link.title | escape }}</span>
+                              </span>
+                            </label>
+                          </li>
+                        {%- endfor -%}
+                      </ul>
+                    </fieldset>
+                  </div>
+                </details>
+              {%- endif -%}
+            {%- endif -%}
+            {%- comment -%} Custom Collection-Based Dynamic Filter (End) {%- endcomment -%}
+
             {%- for filter in results.filters -%}
               {% liquid
                 assign total_active_values = total_active_values | plus: filter.active_values.size
@@ -508,6 +571,65 @@
               class="mobile-facets__main has-submenu gradient"
             >
               {%- if enable_filtering -%}
+                {%- comment -%} Custom Collection-Based Dynamic Filter Mobile (Start) {%- endcomment -%}
+                {%- if results.handle -%}
+                  {%- assign custom_menu = linklists[results.handle] -%}
+                  {%- if custom_menu.links.size > 0 -%}
+                    <details
+                      id="Details-Mobile-Custom-{{ results.handle }}-{{ section.id }}"
+                      class="mobile-facets__details js-filter"
+                      data-index="mobile-0"
+                    >
+                      <summary class="mobile-facets__summary focus-inset">
+                        <div>
+                          <span>{{ custom_menu.title | escape }}</span>
+                          <span class="mobile-facets__arrow">
+                            {{- 'icon-arrow.svg' | inline_asset_content -}}
+                          </span>
+                        </div>
+                      </summary>
+                      <div
+                        id="FacetMobile-Custom-{{ section.id }}"
+                        class="mobile-facets__submenu gradient"
+                      >
+                        <button
+                          class="mobile-facets__close-button link link--text focus-inset"
+                          aria-expanded="true"
+                          type="button"
+                        >
+                          {{- 'icon-arrow.svg' | inline_asset_content -}}
+                          {{ custom_menu.title | escape }}
+                        </button>
+                        <ul class="mobile-facets__list list-unstyled" role="list">
+                          {%- for link in custom_menu.links -%}
+                            <li class="mobile-facets__item list-menu__item">
+                              <label class="mobile-facets__label">
+                                <input
+                                  class="mobile-facets__checkbox"
+                                  type="checkbox"
+                                  name="custom_filter_{{ link.handle }}"
+                                  value="{{ link.url }}"
+                                  {% if request.path == link.url %}
+                                    checked
+                                  {% endif %}
+                                  onclick="window.location.href='{{ link.url }}'"
+                                >
+                                <span class="mobile-facets__highlight"></span>
+                                {{- 'square.svg' | inline_asset_content -}}
+                                {{- 'icon-checkmark.svg' | inline_asset_content -}}
+                                <span class="facet-checkbox__text">
+                                  {{ link.title | escape }}
+                                </span>
+                              </label>
+                            </li>
+                          {%- endfor -%}
+                        </ul>
+                      </div>
+                    </details>
+                  {%- endif -%}
+                {%- endif -%}
+                {%- comment -%} Custom Collection-Based Dynamic Filter Mobile (End) {%- endcomment -%}
+
                 {%- for filter in results.filters -%}
                   {% liquid
                     assign presentation = filter.presentation | default: default_presentation
