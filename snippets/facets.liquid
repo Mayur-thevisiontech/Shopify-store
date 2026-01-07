@@ -138,12 +138,13 @@
                       <ul class="facets-layout facets-layout-list facets__list list-unstyled" role="list">
                         {%- for link in custom_menu.links -%}
                           <li class="list-menu__item facets__item">
-                            <label class="facets__label facet-checkbox">
+                            <label class="facets__label facet-checkbox{% if link.active %} active{% endif %}">
                               <input
                                 type="checkbox"
                                 name="custom_filter_{{ link.handle }}"
                                 value="{{ link.url }}"
-                                {% if request.path == link.url %}
+                                style="position: absolute; opacity: 0; width: 1.6rem; height: 1.6rem; top: 0.7rem; left: -0.4rem; z-index: -1; appearance: none; -webkit-appearance: none;"
+                                {% if link.active %}
                                   checked
                                 {% endif %}
                                 onclick="window.location.href='{{ link.url }}'"
@@ -603,13 +604,14 @@
                         <ul class="mobile-facets__list list-unstyled" role="list">
                           {%- for link in custom_menu.links -%}
                             <li class="mobile-facets__item list-menu__item">
-                              <label class="mobile-facets__label">
+                              <label class="mobile-facets__label{% if link.active %} mobile-facets__label--active{% endif %}">
                                 <input
                                   class="mobile-facets__checkbox"
                                   type="checkbox"
                                   name="custom_filter_{{ link.handle }}"
                                   value="{{ link.url }}"
-                                  {% if request.path == link.url %}
+                                  style="position: absolute; opacity: 0; width: 1.6rem; height: 1.6rem; top: 0.7rem; left: -0.4rem; z-index: -1; appearance: none; -webkit-appearance: none;"
+                                  {% if link.active %}
                                     checked
                                   {% endif %}
                                   onclick="window.location.href='{{ link.url }}'"
